@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            storeFile file('D:/Android/AndroidStudio/KeyStore/mykey.jks')
+            keyAlias 'tmtuyen'
+            keyPassword 'Tuyenhue2508@'
+            storePassword 'Tuyenhue2508@'
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId 'com.tmtuyen.minhtuyen.getinformation'
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "tmtuyen1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    debugCompile 'com.facebook.stetho:stetho:1.4.2'
+    debugCompile 'com.facebook.stetho:stetho-okhttp3:1.4.2'
+    releaseCompile 'net.igenius:stetho-no-op:1.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.jakewharton:butterknife:6.1.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.4'
+    compile 'com.google.android.gms:play-services-location:10.2.4'
+    compile 'net.gotev:uploadservice:3.2.3'
+    compile 'net.gotev:uploadservice-okhttp:3.2.3'
+    compile 'com.github.vansikrishna:Multimager:1.0.6'
+    testCompile 'junit:junit:4.12'
+    compile 'junit:junit:4.12'
+}

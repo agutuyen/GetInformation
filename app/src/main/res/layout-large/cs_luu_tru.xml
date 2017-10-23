@@ -1,0 +1,106 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/nguoi_lien_lac" />
+
+    <TableRow
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="1">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edtHangSao"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5"
+            android:hint="Hạng sao:"
+            android:inputType="number"
+            android:textSize="20sp"
+            app:met_floatingLabel="highlight" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edtSoPhong"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:hint="Tổng số phòng:"
+            android:inputType="number"
+            android:textSize="20sp"
+            app:met_floatingLabel="highlight" />
+    </TableRow>
+
+    <TableRow
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="1">
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edtGiaMin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Giá phòng:"
+            android:inputType="number"
+            android:textSize="20sp"
+            app:met_floatingLabel="highlight" />
+    </TableRow>
+
+    <TableRow android:weightSum="1">
+
+        <CheckBox
+            android:id="@+id/cbPhongHoiNghi"
+            android:layout_weight="0.25"
+            android:text="Phòng hội nghị"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbNhaHang"
+            android:layout_weight="0.25"
+            android:text="Nhà hàng"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbBar"
+            android:layout_weight="0.25"
+            android:text="Bar"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbGym"
+            android:layout_weight="0.25"
+            android:text="Gym"
+            android:textSize="18sp" />
+    </TableRow>
+
+    <TableRow
+        android:paddingTop="16dp"
+        android:weightSum="1">
+
+        <CheckBox
+            android:id="@+id/cbHoBoi"
+            android:layout_weight="0.25"
+            android:text="Hồ bơi"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbKaraoke"
+            android:layout_weight="0.25"
+            android:text="Karaoke"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbMassage"
+            android:layout_weight="0.25"
+            android:text="Massage"
+            android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/cbTenis"
+            android:layout_weight="0.25"
+            android:text="Tenis"
+            android:textSize="18sp" />
+    </TableRow>
+
+</TableLayout>

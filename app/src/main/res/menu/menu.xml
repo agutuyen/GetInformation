@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+    <item
+        android:id="@+id/mnSend"
+        android:icon="@drawable/ic_send"
+        android:title="Gởi thông tin"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/mnSync"
+        android:title="Đồng bộ ảnh"
+        android:icon="@drawable/ic_img_upload"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/mnInfo"
+        android:title="Thông tin phần mềm "
+        android:icon="@drawable/ic_info"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/mnLogout"
+        android:icon="@drawable/ic_logout"
+        android:title="Đăng xuất"
+        app:showAsAction="never" />
+</menu>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Lấy Thông Tin</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyDKbUG34YYWxj9VnkrR0LOEiVwhPPt0dHU
+    </string>
+    <string-array name="array_phan_loai">
+        <item>Chọn Loại</item>
+        <item>1. Du lịch tự nhiên</item>
+        <item>2. Du lịch xã hội</item>
+        <item>3. Du lịch nhân văn</item>
+    </string-array>
+    <string-array name="array_xep_hang">
+        <item>Chọn Hạng</item>
+        <item>1. Cấp tỉnh</item>
+        <item>2. Cấp quốc gia</item>
+        <item>3. Không có</item>
+    </string-array>
+</resources>
