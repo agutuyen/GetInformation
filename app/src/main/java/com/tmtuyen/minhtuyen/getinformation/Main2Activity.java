@@ -1,18 +1,13 @@
 package com.tmtuyen.minhtuyen.getinformation;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -354,11 +349,11 @@ public class Main2Activity extends AppCompatActivity {
         } else {
             edtKinhDo.setError(null);
         }
-        /*if (imagesList.isEmpty() || imagesList.size() < 3) {
-            edtAlbum.setError("Vui lòng lấy từ 3 ảnh");
+        if (imagesList.isEmpty() || imagesList.size() < 1) {
+            edtAlbum.setError("Ít nhất phải có 1 ảnh");
             valid = false;
         } else
-            edtAlbum.setError(null);*/
+            edtAlbum.setError(null);
         if (idDiaDiem == 0) {
             Toast.makeText(this, "Vui lòng chọn đối tượng khảo sát", Toast.LENGTH_LONG).show();
             valid = false;
@@ -382,7 +377,7 @@ public class Main2Activity extends AppCompatActivity {
                             .setMaxRetries(3)
                             .addParameter(key, value)
                             .setUsesFixedLengthStreamingMode(true);
-
+            if (album.length > 0)
             for (int i = 0; i < album.length; i++) {
                 request.addFileToUpload(album[i], "photos[]");
             }
