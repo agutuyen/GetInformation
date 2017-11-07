@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {    
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId 'com.tmtuyen.minhtuyen.getinformation'
         minSdkVersion 21
@@ -13,7 +13,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -31,12 +31,12 @@ dependencies {
     releaseCompile 'net.igenius:stetho-no-op:1.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    annotationProcessor 'com.jakewharton:butterknife:6.1.0'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.google.android.gms:play-services-maps:10.2.4'
     compile 'com.google.android.gms:play-services-location:10.2.4'
     compile 'net.gotev:uploadservice:3.2.3'
     compile 'net.gotev:uploadservice-okhttp:3.2.3'
     compile 'com.github.vansikrishna:Multimager:1.0.6'
-    testCompile 'junit:junit:4.12'
-    compile 'junit:junit:4.12'
+
 }

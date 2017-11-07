@@ -199,19 +199,26 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.1"
-                android:src="@drawable/ic_my_camera"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_my_camera" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/edtHinhAnh"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.9"
+                android:layout_weight="0.75"
                 android:enabled="false"
                 android:hint="Hình ảnh:"
                 android:paddingLeft="5dp"
                 android:textSize="20sp"
                 app:met_floatingLabel="highlight" />
+
+            <Switch
+                android:id="@+id/swUpload"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.15"
+                android:checked="true" />
         </TableRow>
 
         <TableRow

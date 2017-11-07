@@ -1,5 +1,6 @@
 package com.tmtuyen.minhtuyen.getinformation;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,10 +15,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.vlk.multimager.utils.Image;
@@ -27,6 +30,14 @@ import net.gotev.uploadservice.ServerResponse;
 import net.gotev.uploadservice.UploadInfo;
 import net.gotev.uploadservice.UploadStatusDelegate;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -67,6 +78,8 @@ public class Main2Activity extends AppCompatActivity {
     LinearLayout rootLayout;
     @InjectView(R.id.edtMoTa)
     EditText edtMoTa;
+    @InjectView(R.id.swUpload)
+    Switch aSwitch;
     EditText edtNguoiLienHe, edtHangSao, edtTongPhong, edtGiaThap, edtGioMoCua, edtMonNgon;
     Spinner spnPhanLoai, spnXepHang;
     CheckBox chkPhongHN, chkNhaHang, chkBar, chkGym, chkHoBoi, chkKaraoke, chkMassage, chkTenis;
@@ -113,7 +126,6 @@ public class Main2Activity extends AppCompatActivity {
         if (chkTenis != null) tenis = chkTenis.isChecked() ? 1 : 0;
         if (chkPhongHN != null) phongHN = chkPhongHN.isChecked() ? 1 : 0;
         if (chkKaraoke != null) karaoke = chkKaraoke.isChecked() ? 1 : 0;
-
     }
 
     private void initParams() {
@@ -251,6 +263,13 @@ public class Main2Activity extends AppCompatActivity {
                 startActivityForResult(intent, 2);
             }
         });
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked)
+                    Toast.makeText(Main2Activity.this, "Hình sẽ được upload sau!", Toast.LENGTH_LONG).show();
+            }
+        });
         imagesList = new ArrayList<>();
         initParams();
     }
@@ -277,6 +296,7 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -298,9 +318,46 @@ public class Main2Activity extends AppCompatActivity {
                 break;
             case R.id.mnLogout:
                 pref.edit().clear().commit();
+                deleteFile("dsHinh.tmt");
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 break;
             case R.id.mnSync:
+                ArrayList<String> arrayList = new ArrayList<>();
+                try {
+                    FileInputStream fIn = openFileInput("dsHinh.tmt");
+                    InputStreamReader reader = new InputStreamReader(fIn);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+                    String receiveString = "";
+                    while ((receiveString = bufferedReader.readLine()) != null) {
+                        arrayList.add(receiveString);
+                    }
+
+                    String[] split = arrayList.get(0).split(";");
+                    String currentID = split[0];
+                    String currentType = split[1];
+                    int i = 0;
+                    while (i < arrayList.size()) {
+                        ArrayList<String> photos = new ArrayList<>();
+                        do {
+                            split = arrayList.get(i).split(";");
+                            photos.add(split[2]);
+                            i++;
+                        }
+                        while (i < arrayList.size() && (currentID.contentEquals(arrayList.get(i).split(";")[0]))
+                                && (currentType.contentEquals(arrayList.get(i).split(";")[1])));
+                        sync("str", "id:" + currentID + ",id_loai:" + currentType, photos.toArray(new String[0]));
+                        if (i < arrayList.size()) {
+                            currentID = arrayList.get(i).split(";")[0];
+                            currentType = arrayList.get(i).split(";")[1];
+                        }
+                    }
+                    fIn.close();
+                    deleteFile("dsHinh.tmt");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
         }
         return true;
     }
@@ -318,7 +375,6 @@ public class Main2Activity extends AppCompatActivity {
         for (int i = 0; i < album.length; i++)
             album[i] = imagesList.get(i).imagePath;
         upload("str", str, album);
-
     }
 
     private void addLayout(int layout) {
@@ -349,11 +405,11 @@ public class Main2Activity extends AppCompatActivity {
         } else {
             edtKinhDo.setError(null);
         }
-        if (imagesList.isEmpty() || imagesList.size() < 1) {
+        /*if (imagesList.isEmpty() || imagesList.size() < 1) {
             edtAlbum.setError("Ít nhất phải có 1 ảnh");
             valid = false;
         } else
-            edtAlbum.setError(null);
+            edtAlbum.setError(null);*/
         if (idDiaDiem == 0) {
             Toast.makeText(this, "Vui lòng chọn đối tượng khảo sát", Toast.LENGTH_LONG).show();
             valid = false;
@@ -377,9 +433,28 @@ public class Main2Activity extends AppCompatActivity {
                             .setMaxRetries(3)
                             .addParameter(key, value)
                             .setUsesFixedLengthStreamingMode(true);
-            if (album.length > 0)
+            if (album.length > 0 && aSwitch.isChecked())
             for (int i = 0; i < album.length; i++) {
                 request.addFileToUpload(album[i], "photos[]");
+            }
+            else {
+                request.addParameter("photos", "null");
+                if (album.length > 0) {
+                    try {
+                        FileOutputStream fOut = openFileOutput("dsTam.tmt", MODE_PRIVATE | MODE_APPEND);
+                        OutputStreamWriter writer = new OutputStreamWriter(fOut);
+                        for (int i = 0; i < album.length; i++) {
+                            writer.write(album[i] + "\n");
+                        }
+                        writer.flush();
+                        writer.close();
+                        fOut.close();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             request.setDelegate(new UploadStatusDelegate() {
                 @Override
@@ -394,14 +469,34 @@ public class Main2Activity extends AppCompatActivity {
 
                 @Override
                 public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
-                    if (serverResponse.getBodyAsString().contentEquals("1")) {
+                    String resp = serverResponse.getBodyAsString();
+                    if (resp.matches("\\d+(?:\\.\\d+)?") && !resp.contentEquals("-1")) {
+                        try {
+                            FileInputStream fIn = openFileInput("dsTam.tmt");
+                            InputStreamReader reader = new InputStreamReader(fIn);
+                            BufferedReader bufferedReader = new BufferedReader(reader);
+                            String receiveString = "";
+                            FileOutputStream fOut = openFileOutput("dsHinh.tmt", MODE_PRIVATE | MODE_APPEND);
+                            OutputStreamWriter writer = new OutputStreamWriter(fOut);
+                            while ((receiveString = bufferedReader.readLine()) != null) {
+                                writer.write(resp + ";" + idDiaDiem + ";" + receiveString + "\n");
+                            }
+                            writer.flush();
+                            writer.close();
+                            fOut.close();
+                            fIn.close();
+                            deleteFile("dsTam.tmt");
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         Toast.makeText(getApplicationContext(), "Thành công. Nhập điểm mới.", Toast.LENGTH_LONG).show();
                         reloadLayout();
                         initParams();
                     } else
                         Toast.makeText(getApplicationContext(), "Thất bại. Vui lòng gởi lại...", Toast.LENGTH_LONG).show();
                     progressDialog.dismiss();
-
                 }
 
                 @Override
@@ -412,6 +507,58 @@ public class Main2Activity extends AppCompatActivity {
             request.startUpload();
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void sync(String key, String value, String[] photos) {
+        final ProgressDialog progressDialog = new ProgressDialog(Main2Activity.this,
+                R.style.Theme_AppCompat_DayNight_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Đang đồng bộ ảnh...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        try {
+            final MultipartUploadRequest request = new MultipartUploadRequest(this, server + "/api/diadiem/dongbo")
+                    .setMethod("POST")
+                    .setUtf8Charset()
+                    .setMaxRetries(3)
+                    .addParameter(key, value)
+                    .setUsesFixedLengthStreamingMode(true);
+            for (int i = 0; i < photos.length; i++) {
+                request.addFileToUpload(photos[i], "photos[]");
+            }
+            request.setDelegate(new UploadStatusDelegate() {
+                @Override
+                public void onProgress(Context context, UploadInfo uploadInfo) {
+
+                }
+
+                @Override
+                public void onError(Context context, UploadInfo uploadInfo, Exception exception) {
+                    Toast.makeText(getApplicationContext(), "FALSE", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCompleted(Context context, UploadInfo uploadInfo, ServerResponse serverResponse) {
+                    String resp = serverResponse.getBodyAsString();
+                    if (resp.contentEquals("1")) {
+                        Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_SHORT).show();
+
+                    } else
+                        Toast.makeText(getApplicationContext(), "FALSE", Toast.LENGTH_LONG).show();
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onCancelled(Context context, UploadInfo uploadInfo) {
+
+                }
+            });
+            request.startUpload();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
